@@ -1,0 +1,39 @@
+erDiagram
+    stations ||--o{ pollutant_readings : "has"
+    stations ||--o{ weather_readings : "has"
+    wind_directions ||--o{ weather_readings : "classifies"
+
+    stations {
+        int station_id PK
+        varchar station_name UK
+        enum station_type
+        decimal latitude
+        decimal longitude
+    }
+    wind_directions {
+        int wind_dir_id PK
+        varchar wd_code UK
+        varchar wd_label
+    }
+    pollutant_readings {
+        bigint reading_id PK
+        int station_id FK
+        datetime ts
+        float pm2_5
+        float pm10
+        float so2
+        float no2
+        float co
+        float o3
+    }
+    weather_readings {
+        bigint reading_id PK
+        int station_id FK
+        int wind_dir_id FK
+        datetime ts
+        float temp
+        float pres
+        float dewp
+        float rain
+        float wspm
+    }

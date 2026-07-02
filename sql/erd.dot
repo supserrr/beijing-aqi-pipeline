@@ -1,0 +1,50 @@
+digraph ERD {
+  graph [rankdir=LR, splines=ortho, nodesep=0.7, ranksep=1.4,
+         bgcolor="white", fontname="Helvetica"];
+  node  [shape=plaintext, fontname="Helvetica"];
+  edge  [fontname="Helvetica", fontsize=11, color="#555555", dir=both];
+
+  stations [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="5">
+      <TR><TD BGCOLOR="#2b6cb0" COLSPAN="2"><FONT COLOR="white"><B>stations</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK</B></TD><TD ALIGN="LEFT" PORT="id"><B>station_id</B></TD></TR>
+      <TR><TD ALIGN="LEFT">UQ</TD><TD ALIGN="LEFT">station_name</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">station_type</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">latitude</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">longitude</TD></TR>
+    </TABLE>>];
+
+  wind_directions [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="5">
+      <TR><TD BGCOLOR="#2b6cb0" COLSPAN="2"><FONT COLOR="white"><B>wind_directions</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK</B></TD><TD ALIGN="LEFT" PORT="id"><B>wind_dir_id</B></TD></TR>
+      <TR><TD ALIGN="LEFT">UQ</TD><TD ALIGN="LEFT">wd_code</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">wd_label</TD></TR>
+    </TABLE>>];
+
+  pollutant_readings [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="5">
+      <TR><TD BGCOLOR="#c05621" COLSPAN="2"><FONT COLOR="white"><B>pollutant_readings</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK</B></TD><TD ALIGN="LEFT"><B>reading_id</B></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>FK</B></TD><TD ALIGN="LEFT" PORT="st">station_id</TD></TR>
+      <TR><TD ALIGN="LEFT">UQ</TD><TD ALIGN="LEFT">ts</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">pm2_5, pm10, so2</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">no2, co, o3</TD></TR>
+    </TABLE>>];
+
+  weather_readings [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="5">
+      <TR><TD BGCOLOR="#c05621" COLSPAN="2"><FONT COLOR="white"><B>weather_readings</B></FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>PK</B></TD><TD ALIGN="LEFT"><B>reading_id</B></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>FK</B></TD><TD ALIGN="LEFT" PORT="st">station_id</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>FK</B></TD><TD ALIGN="LEFT" PORT="wd">wind_dir_id</TD></TR>
+      <TR><TD ALIGN="LEFT">UQ</TD><TD ALIGN="LEFT">ts</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">temp, pres, dewp</TD></TR>
+      <TR><TD ALIGN="LEFT"></TD><TD ALIGN="LEFT">rain, wspm</TD></TR>
+    </TABLE>>];
+
+  // relationships (crow's foot on the "many" end)
+  stations:id        -> pollutant_readings:st [arrowtail=none, arrowhead=crow, taillabel="1", headlabel="N"];
+  stations:id        -> weather_readings:st   [arrowtail=none, arrowhead=crow, taillabel="1", headlabel="N"];
+  wind_directions:id -> weather_readings:wd   [arrowtail=none, arrowhead=crow, taillabel="1", headlabel="N"];
+}
