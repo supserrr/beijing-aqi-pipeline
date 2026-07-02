@@ -1,0 +1,66 @@
+[
+  {
+    "station": "Aotizhongxin",
+    "station_type": "urban",
+    "location": {
+      "lat": 39.982,
+      "lon": 116.397
+    },
+    "timestamp": "2016-10-28 23:00:00",
+    "time": {
+      "year": 2016,
+      "month": 10,
+      "day": 28,
+      "hour": 23,
+      "is_heating_season": 0
+    },
+    "pollutants": {
+      "pm2_5": 13.0,
+      "pm10": 40.0,
+      "so2": 3.0,
+      "no2": 49.0,
+      "co": 400.0,
+      "o3": 16.0
+    },
+    "weather": {
+      "temp": 5.7,
+      "pres": 1029.1,
+      "dewp": -1.7,
+      "rain": 0.0,
+      "wind_dir": "NW",
+      "wspm": 0.6
+    }
+  },
+  {
+    "station": "Aotizhongxin",
+    "station_type": "urban",
+    "location": {
+      "lat": 39.982,
+      "lon": 116.397
+    },
+    "timestamp": "2016-10-29 00:00:00",
+    "time": {
+      "year": 2016,
+      "month": 10,
+      "day": 29,
+      "hour": 0,
+      "is_heating_season": 0
+    },
+    "pollutants": {
+      "pm2_5": 12.0,
+      "pm10": 28.0,
+      "so2": 2.0,
+      "no2": 61.0,
+      "co": 400.0,
+      "o3": 2.0
+    },
+    "weather": {
+      "temp": 4.0,
+      "pres": 1029.0,
+      "dewp": -0.6,
+      "rain": 0.0,
+      "wind_dir": "WNW",
+      "wspm": 0.6
+    }
+  }
+]
