@@ -1,0 +1,11 @@
+experiment,approach,hyperparameters,split (tr/va/te),train_acc,test_acc,macro_F1,observation
+Baseline: persistence (today's category),naive,none,12180/2616/2616,0.41,0.377,0.335,Tomorrow = today's category; only ~41% right
+Baseline: majority class,naive,always 'Unhlth',12180/2616/2616,0.434,0.354,0.087,"Predicts the most common class; high acc, zero minority recall"
+Exp1: Logistic regression — lags only,linear,5 lag features,12180/2616/2616,0.483,0.419,0.216,PM2.5 history alone clearly beats persistence
+Exp2: Logistic regression — full features,linear,29 features,12180/2616/2616,0.519,0.483,0.276,Co-pollutants + weather + calendar add a clear lift
+Exp3: Logistic regression — tuned L2,linear,L2=0.001,12180/2616/2616,0.518,0.488,0.296,Light L2 gives the best-calibrated linear model
+Exp4: k-NN classifier (tuned),instance-based,k=15,12180/2616/2616,0.755,0.376,0.306,Overfits (train > test); balanced votes lift macro-F1
+"Exp5: MLP classifier (small, h=8)",neural net,"hidden=8, lr=0.1, L2=0.0001",12180/2616/2616,0.549,0.491,0.329,Limited capacity underfits the minority classes
+"Exp6: MLP classifier (tuned, h=32)",neural net,"hidden=32, lr=0.05, L2=0.0001",12180/2616/2616,0.589,0.453,0.34,Non-linear model; nonlinearity helps the minority classes
+"Exp7: MLP classifier (large, h=64 + L2)",neural net,"hidden=64, lr=0.05, L2=0.001",12180/2616/2616,0.605,0.448,0.335,Extra capacity + L2 gives no further gain
+Exp8: Logistic regression — class-balanced,linear,"L2=0.001, balanced(b=0.75)",12180/2616/2616,0.465,0.403,0.355,"Class weights recover minority recall: best macro-F1, at an accuracy cost"
