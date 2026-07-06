@@ -1,0 +1,32 @@
+{
+  "rows": 420768,
+  "stations": 12,
+  "station_names": [
+    "Aotizhongxin",
+    "Changping",
+    "Dingling",
+    "Dongsi",
+    "Guanyuan",
+    "Gucheng",
+    "Huairou",
+    "Nongzhanguan",
+    "Shunyi",
+    "Tiantan",
+    "Wanliu",
+    "Wanshouxigong"
+  ],
+  "start": "2013-03-01 00:00:00",
+  "end": "2017-02-28 23:00:00",
+  "span_days": 1460,
+  "inferred_frequency": "0 days 01:00:00",
+  "n_numeric_cols": 11,
+  "source": "real",
+  "missing_top": {
+    "CO": 4.92,
+    "O3": 3.16,
+    "NO2": 2.88,
+    "SO2": 2.14,
+    "PM2.5": 2.08,
+    "PM10": 1.53
+  }
+}

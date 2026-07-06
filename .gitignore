@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.venv-report/
+
+# Build / runtime artifacts
+*.db
+*.db-journal
+# synthetic fixture is regenerated automatically on first run
+data/synthetic/*.csv
+# NOTE: the real raw dataset (data/raw/*.csv) IS committed so the repo
+# reproduces every number/figure/table on clone. Only zips are ignored.
+data/raw/*.zip
+
+# OS
+.DS_Store
+# LibreOffice/Office lock files (the report is edited outside this repo)
+.~lock.*#
+
+# Keep the committed figures and tables (they are deliverables)
+!outputs/figures/*.png
+!outputs/tables/*
