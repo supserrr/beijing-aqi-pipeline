@@ -192,7 +192,7 @@ Each of the four members owned one of the assignment's four tasks end to end.
 | **Gaju Keane** | Task 1: preprocessing, EDA, analytical questions, and the next-day AQI classification model (tuning & diagnostics) |
 | **Joella Teta** | Task 2: relational (MySQL) + MongoDB schema design, ERD, and the demonstration queries |
 | **Serein Byiringiro Shima** | Task 3: FastAPI CRUD + time-series query endpoints for both databases |
-| **Parfait Christian Henry UHIRIWE** | Task 4: consolidated next-day forecast script |
+| **Henry Christian Parfait UHIRIWE** | Task 4: consolidated next-day forecast script |
 
 Shared: dataset selection, repository structure, literature review, report, and integration.
 
