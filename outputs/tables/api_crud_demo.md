@@ -252,6 +252,32 @@ _Data source: real. Backends: SQLite mirror of the MySQL schema + mongomock (rea
 }
 ```
 
+### GET /mongo/readings/Aotizhongxin/item/2017-03-01 00:00:00  (READ one)
+
+**response**
+
+```json
+{
+  "station": "Aotizhongxin",
+  "timestamp": "2017-03-01 00:00:00",
+  "station_type": "urban",
+  "location": {
+    "lat": 39.982,
+    "lon": 116.397
+  },
+  "pollutants": {
+    "pm2_5": 123,
+    "pm10": 180,
+    "co": 900
+  },
+  "weather": {
+    "temp": 2.0,
+    "wind_dir": "NW",
+    "wspm": 3.1
+  }
+}
+```
+
 ### GET /mongo/readings/Aotizhongxin/latest  (READ latest — required)
 
 **response**
@@ -407,5 +433,16 @@ _Data source: real. Backends: SQLite mirror of the MySQL schema + mongomock (rea
   "deleted": true,
   "station": "Aotizhongxin",
   "ts": "2017-03-01 00:00:00"
+}
+```
+
+### GET deleted record -> 404
+
+**response**
+
+```json
+{
+  "status": 404,
+  "detail": "no document for Aotizhongxin @ 2017-03-01 00:00:00"
 }
 ```

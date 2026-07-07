@@ -131,7 +131,7 @@ baselines (full table, with per-run observations, in
 | **MLP classifier (best acc, deployed)** | **h = 8, lr = 0.1, L2 = 1e-4** | **0.49** | 0.33 |
 | Logistic (class-balanced) | L2 = 1e-3, β = 0.75 | 0.40 | **0.36** |
 
-Every learned model beats the 0.38 persistence baseline. The deployed forecaster is a
+Every learned model except k-NN beats the 0.38 persistence baseline on accuracy. The deployed forecaster is a
 from-scratch MLP with the best test accuracy (≈ 0.49, macro-AUC ≈ 0.77); a
 class-balanced logistic model reaches the best macro-F1 (≈ 0.36) by recovering
 minority-class recall, at an accuracy cost. Adding same-day co-pollutants and the

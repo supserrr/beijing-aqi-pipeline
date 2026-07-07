@@ -19,11 +19,18 @@ the framework-independent repositories in api/repositories.py.
 """
 from __future__ import annotations
 import os
+import sys
 from datetime import datetime
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Query, Depends
 from pydantic import BaseModel, Field
+
+# Make the sibling repositories module importable whether the app is launched
+# as `uvicorn api.main:app` from the repo root or `uvicorn main:app` from api/.
+HERE = os.path.dirname(os.path.abspath(__file__))
+if HERE not in sys.path:
+    sys.path.insert(0, HERE)
 
 from repositories import (SQLReadingRepository, MongoReadingRepository,
                           NotFound, Conflict, POLL_FIELDS)

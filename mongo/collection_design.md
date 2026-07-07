@@ -19,10 +19,10 @@ access pattern that dominates a time-series API.
   "timestamp": ISODate("2017-02-28T23:00:00Z"),
   "time": { "year": 2017, "month": 2, "day": 28, "hour": 23,
             "is_heating_season": 1 },
-  "pollutants": { "pm2_5": 50.0, "pm10": 77.0, "so2": 9.0,
-                  "no2": 89.0, "co": 1566.0, "o3": 31.0 },
-  "weather": { "temp": 2.1, "pres": 1031.0, "dewp": -15.0,
-               "rain": 0.0, "wind_dir": "NW", "wspm": 4.4 }
+  "pollutants": { "pm2_5": 19.0, "pm10": 31.0, "so2": 10.0,
+                  "no2": 79.0, "co": 600.0, "o3": 42.0 },
+  "weather": { "temp": 8.6, "pres": 1014.1, "dewp": -15.9,
+               "rain": 0.0, "wind_dir": "NNE", "wspm": 1.3 }
 }
 ```
 

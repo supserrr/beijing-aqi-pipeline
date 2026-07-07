@@ -138,6 +138,8 @@ def demo_mongo(repo: MongoReadingRepository):
            "pollutants": {"pm2_5": 123, "pm10": 180, "co": 900},
            "weather": {"temp": 2.0, "wind_dir": "NW", "wspm": 3.1}}
     step("POST /mongo/readings  (CREATE)", doc, repo.create(doc))
+    step(f"GET /mongo/readings/{STATION}/item/{new_ts}  (READ one)",
+         None, repo.get(STATION, new_ts))
     step(f"GET /mongo/readings/{STATION}/latest  (READ latest — required)",
          None, repo.latest(STATION))
     rng = repo.range(STATION, datetime(2017, 2, 28, 18), datetime(2017, 2, 28, 23))
@@ -149,6 +151,10 @@ def demo_mongo(repo: MongoReadingRepository):
          repo.update(STATION, new_ts, {"pollutants.pm2_5": 999}))
     step(f"DELETE /mongo/readings/{STATION}/item  (DELETE)",
          None, repo.delete(STATION, new_ts))
+    try:
+        repo.get(STATION, new_ts)
+    except NotFound as e:
+        step("GET deleted record -> 404", None, {"status": 404, "detail": str(e)})
 
 
 def main():
