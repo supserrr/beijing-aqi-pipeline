@@ -32,8 +32,18 @@ four tasks end to end:
 > stand-in automatically. All models are hand-written in NumPy, so there are no
 > heavy ML dependencies.
 
+## Architecture
+
+![End-to-end pipeline architecture](outputs/figures/pipeline_architecture.png)
+
+Raw station CSVs → preprocessing & modelling (Task 1) → MySQL + MongoDB (Task 2)
+→ a FastAPI service over both (Task 3) → a forecast script that fetches from the
+API, reuses the Task-1 preprocessing, loads the trained model, and predicts the
+next day's AQI category (Task 4). Diagram source: [`docs/pipeline_architecture.dot`](docs/pipeline_architecture.dot) (Graphviz).
+
 ## Contents
 
+- [Architecture](#architecture)
 - [Prerequisites](#prerequisites)
 - [Quickstart](#quickstart)
 - [Running each task individually](#running-each-task-individually)

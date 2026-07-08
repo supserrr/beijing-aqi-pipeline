@@ -1,0 +1,61 @@
+digraph pipeline {
+  rankdir=TB; bgcolor="white"; compound=true; newrank=true;
+  graph [fontname="Helvetica", nodesep=0.4, ranksep=0.5, pad=0.35, dpi=220];
+  node  [fontname="Helvetica", shape=box, style="rounded,filled", fillcolor="white",
+         penwidth=1.7, margin="0.20,0.12", fontsize=13];
+  edge  [fontname="Helvetica-Bold", fontsize=11, color="#555555", penwidth=1.6, arrowsize=0.85];
+
+  raw    [label="Raw data — 12 station CSVs (2013–2017)  ·  data/raw", shape=note, fillcolor="#f2f3f5", color="#9aa0a6", fontsize=12];
+  loader [label="data_loader.py — real-or-synthetic loader", color="#4a7fd6"];
+
+  subgraph cluster_t1 {
+    label="Task 1 — Preprocessing, EDA & Modelling"; labelloc=t; style="rounded,filled";
+    fillcolor="#eef4ff"; color="#4a7fd6"; fontcolor="#2b6cb0"; fontsize=14; penwidth=1.8; margin=16;
+    prep  [label="preprocessing.py\nclean · impute · outlier-cap · lag/MA · daily AQI labels", color="#4a7fd6"];
+    train [label="train_model.py\n10 experiments (logistic / kNN / MLP) + diagnostics", color="#4a7fd6"];
+    eda   [label="eda.py + analytical_questions.py\nEDA figures & 6 analytical questions", color="#4a7fd6"];
+    model [label="Trained model — clf_model.npz + model_meta.json", shape=note, fillcolor="#fff7e0", color="#c99a2e"];
+    prep -> train -> model;
+    prep -> eda [constraint=false];
+  }
+
+  subgraph cluster_t2 {
+    label="Task 2 — Databases"; labelloc=t; style="rounded,filled";
+    fillcolor="#eefbf1"; color="#3f9d5a"; fontcolor="#2f7d47"; fontsize=14; penwidth=1.8; margin=16;
+    build [label="db/build_databases.py — loads both databases", color="#3f9d5a"];
+    mysql [label="MySQL (3NF)\nstations · wind_directions · pollutant/weather_readings", shape=cylinder, fillcolor="#e3f7ea", color="#3f9d5a", fontsize=11.5];
+    mongo [label="MongoDB\nair_quality embedded documents", shape=cylinder, fillcolor="#e3f7ea", color="#3f9d5a", fontsize=11.5];
+    build -> mysql; build -> mongo;
+    {rank=same; mysql; mongo;}
+  }
+
+  subgraph cluster_t3 {
+    label="Task 3 — API (FastAPI)"; labelloc=t; style="rounded,filled";
+    fillcolor="#faf1ff"; color="#9b59d0"; fontcolor="#7e3fb0"; fontsize=14; penwidth=1.8; margin=16;
+    api  [label="api/main.py — FastAPI · CRUD + latest + date-range", color="#9b59d0"];
+    repo [label="api/repositories.py — shared repository layer", color="#9b59d0"];
+    api -> repo;
+  }
+
+  subgraph cluster_t4 {
+    label="Task 4 — Forecast"; labelloc=t; style="rounded,filled";
+    fillcolor="#fff6ec"; color="#d68633"; fontcolor="#b5651a"; fontsize=14; penwidth=1.8; margin=16;
+    fc  [label="forecast/forecast.py\nfetch → preprocess (reuse Task 1) → load model → predict", color="#d68633"];
+    out [label="Next-day AQI category + probabilities", shape=note, fillcolor="#ffe8d6", color="#d68633"];
+    fc -> out;
+  }
+
+  raw -> loader;
+  loader -> prep [lhead=cluster_t1];
+  loader -> build [lhead=cluster_t2];
+  api -> fc [label="fetch"];
+  repo -> mysql [style=dashed, constraint=false, color="#9b59d0", label="query"];
+  repo -> mongo [style=dashed, constraint=false, color="#9b59d0"];
+  model -> fc [style=dashed, constraint=false, color="#c99a2e", label="load"];
+  prep -> fc [style=dashed, constraint=false, color="#4a7fd6", label="reuse"];
+
+  // invisible backbone to force clusters to stack vertically
+  model -> build [style=invis];
+  mysql -> api   [style=invis];
+  repo  -> fc    [style=invis];
+}
