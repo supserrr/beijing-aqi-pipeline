@@ -34,7 +34,7 @@ beijing-aqi-pipeline/
 ├── sql/                      # Task 2: relational design
 │   ├── schema_mysql.sql      #   MySQL DDL (3NF, 4 tables)
 │   ├── queries_mysql.sql     #   5 demo queries (incl. latest + date range)
-│   ├── erd.dot / erd.mermaid #   Entity-Relationship Diagram (source)
+│   ├── erd.dot / erd.mermaid #   ERD source (rendered image: outputs/figures/erd.png)
 ├── mongo/                    # Task 2: document design
 │   ├── collection_design.md  #   embedded-document design + indexes
 │   └── sample_documents.json
@@ -57,7 +57,7 @@ beijing-aqi-pipeline/
 ## Quickstart
 
 ```bash
-pip install -r requirements.txt        # numpy, pandas, matplotlib, seaborn
+pip install -r requirements.txt        # numpy, pandas, matplotlib, seaborn, tabulate, mongomock
 
 # ---- Task 1: EDA, analytical questions, model ----
 python src/eda.py                      # -> outputs/figures + eda_summary.json
@@ -165,11 +165,17 @@ the recent window.
   (`stations`, `wind_directions`) and two fact tables that share the
   `(station_id, ts)` grain. MongoDB embeds one document per station-hour for
   single-lookup reads. Both are queried with real results in `outputs/tables/`.
+  The SQL demo queries run over the full dataset (420,768 rows); the offline
+  MongoDB demo collection is built from the most recent 4-month window
+  (~35,400 documents) to stay lightweight, so its aggregate counts reflect that
+  heating-season window rather than the full four years.
 - The SQL and Mongo CRUD operations share one repository layer. The SQL repo is
   placeholder-parameterized (`%s` for MySQL, `?` for SQLite), so the same code
   runs in production and in the offline demo.
-- All models are implemented in NumPy, so the whole pipeline runs with just
-  numpy, pandas, matplotlib, and seaborn (no heavy ML dependencies).
+- All models are implemented in NumPy, so the whole pipeline runs with a light
+  dependency set — numpy, pandas, matplotlib, seaborn, plus tabulate (result
+  tables) and mongomock (the in-memory MongoDB demo) — and no heavy ML
+  frameworks.
 
 ---
 
@@ -192,7 +198,7 @@ Each of the four members owned one of the assignment's four tasks end to end.
 | **Gaju Keane** | Task 1: preprocessing, EDA, analytical questions, and the next-day AQI classification model (tuning & diagnostics) |
 | **Joella Teta** | Task 2: relational (MySQL) + MongoDB schema design, ERD, and the demonstration queries |
 | **Serein Byiringiro Shima** | Task 3: FastAPI CRUD + time-series query endpoints for both databases |
-| **Henry Christian Parfait UHIRIWE** | Task 4: consolidated next-day forecast script |
+| **Parfait Christian Henry UHIRIWE** | Task 4: consolidated next-day forecast script |
 
 Shared: dataset selection, repository structure, literature review, report, and integration.
 

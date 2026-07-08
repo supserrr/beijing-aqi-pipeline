@@ -390,7 +390,7 @@ _Data source: real. Backends: SQLite mirror of the MySQL schema + mongomock (rea
 ]
 ```
 
-### PUT /mongo/readings/Aotizhongxin/item  (UPDATE)
+### PUT /mongo/readings/Aotizhongxin/item/2017-03-01 00:00:00  (UPDATE)
 
 **request**
 
@@ -424,7 +424,7 @@ _Data source: real. Backends: SQLite mirror of the MySQL schema + mongomock (rea
 }
 ```
 
-### DELETE /mongo/readings/Aotizhongxin/item  (DELETE)
+### DELETE /mongo/readings/Aotizhongxin/item/2017-03-01 00:00:00  (DELETE)
 
 **response**
 

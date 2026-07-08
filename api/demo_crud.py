@@ -146,10 +146,10 @@ def demo_mongo(repo: MongoReadingRepository):
     step(f"GET /mongo/readings/{STATION}/range  (READ date range — required)",
          {"start": "2017-02-28T18:00", "end": "2017-02-28T23:00",
           "returned": len(rng)}, rng[:3] + (["..."] if len(rng) > 3 else []))
-    step(f"PUT /mongo/readings/{STATION}/item  (UPDATE)",
+    step(f"PUT /mongo/readings/{STATION}/item/{new_ts}  (UPDATE)",
          {"pollutants.pm2_5": 999},
          repo.update(STATION, new_ts, {"pollutants.pm2_5": 999}))
-    step(f"DELETE /mongo/readings/{STATION}/item  (DELETE)",
+    step(f"DELETE /mongo/readings/{STATION}/item/{new_ts}  (DELETE)",
          None, repo.delete(STATION, new_ts))
     try:
         repo.get(STATION, new_ts)
