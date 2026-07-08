@@ -194,7 +194,7 @@ beijing-aqi-pipeline/
 ├── sql/                      # Task 2: relational design
 │   ├── schema_mysql.sql      #   MySQL DDL (3NF, 4 tables)
 │   ├── queries_mysql.sql     #   5 demo queries (incl. latest + date range)
-│   └── erd.dot / erd.mermaid #   ERD source (rendered image: outputs/figures/erd.png)
+│   └── erd.eraser            #   ERD source -> outputs/figures/erd.png (erd.dot / erd.mermaid are alt sources)
 ├── mongo/                    # Task 2: document design
 │   ├── collection_design.md  #   embedded-document design + indexes
 │   └── sample_documents.json

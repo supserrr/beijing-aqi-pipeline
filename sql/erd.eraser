@@ -1,0 +1,51 @@
+// Eraser diagram-as-code (https://app.eraser.io) — source for outputs/figures/erd.png.
+// Entity-relationship diagram of the Beijing Multi-Site Air-Quality relational
+// schema: 3NF, two dimension tables (stations, wind_directions) and two fact
+// tables (pollutant_readings, weather_readings) that share the (station_id, ts) grain.
+
+typeface: clean
+
+title Beijing Multi-Site Air-Quality Data Model
+
+stations [icon: map-pin, color: blue] {
+  station_id int pk
+  station_name varchar unique
+  station_type enum
+  latitude decimal
+  longitude decimal
+}
+
+wind_directions [icon: wind, color: purple] {
+  wind_dir_id int pk
+  wd_code varchar unique
+  wd_label varchar
+}
+
+pollutant_readings [icon: cloud, color: red] {
+  reading_id bigint pk
+  station_id int fk
+  ts datetime
+  pm2_5 float
+  pm10 float
+  so2 float
+  no2 float
+  co float
+  o3 float
+}
+
+weather_readings [icon: thermometer, color: green] {
+  reading_id bigint pk
+  station_id int fk
+  wind_dir_id int fk
+  ts datetime
+  temp float
+  pres float
+  dewp float
+  rain float
+  wspm float
+}
+
+// relationships (one-to-many)
+stations.station_id < pollutant_readings.station_id
+stations.station_id < weather_readings.station_id
+wind_directions.wind_dir_id < weather_readings.wind_dir_id
