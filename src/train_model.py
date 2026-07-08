@@ -102,7 +102,10 @@ def pr_curve(y_bin, score):
     return rec, prec
 
 
-_trapz = getattr(np, "trapezoid", np.trapz)
+# np.trapezoid (NumPy>=2.0) supersedes np.trapz, which is removed in NumPy 2.x.
+# Resolve lazily so a fresh `numpy>=1.24` install (which pulls NumPy 2.x) does not
+# crash on the eager default-arg evaluation of a name that no longer exists.
+_trapz = np.trapezoid if hasattr(np, "trapezoid") else np.trapz
 def auc(fpr, tpr): return float(_trapz(tpr, fpr))
 
 
@@ -184,6 +187,7 @@ class MLPClassifier:
     """1 hidden layer, ReLU, softmax output, cross-entropy, mini-batch SGD + L2."""
     def __init__(self, d, h=32, lr=0.1, l2=1e-4, epochs=80, bs=256, seed=7,
                  class_weight=None):
+        self.seed = seed
         r = np.random.default_rng(seed)
         self.W1 = r.normal(0, np.sqrt(2 / d), (d, h)); self.b1 = np.zeros(h)
         self.W2 = r.normal(0, np.sqrt(2 / h), (h, K)); self.b2 = np.zeros(K)
@@ -195,7 +199,7 @@ class MLPClassifier:
         return z1, a1, softmax(a1 @ self.W2 + self.b2)
 
     def fit(self, X, y):
-        n = len(X); Y = np.eye(K)[y]; r = np.random.default_rng(7)
+        n = len(X); Y = np.eye(K)[y]; r = np.random.default_rng(self.seed)
         cw = self.class_weight
         for _ in range(self.epochs):
             perm = r.permutation(n)
@@ -504,8 +508,16 @@ def run():
     # deploy the best-accuracy parametric, refit-on-train+val model (logistic or
     # MLP) — the operational forecaster; kNN and the class-balanced model are
     # comparison points (the latter trades accuracy for recall), not deployed.
-    dep_name = max(fitted, key=lambda n: float(
-        table.loc[table.experiment == n, "test_acc"].iloc[0]))
+    # Prefer the reported best-accuracy model when it is deployable, so the
+    # diagnostics (figures, experiment_summary, model_meta) always describe the
+    # same model Task 4 loads. Only if the top model is non-deployable (a
+    # baseline or the non-parametric kNN) do we fall back to the best deployable
+    # one — in which case best_model != deployed_model makes the split explicit.
+    if best_name in fitted:
+        dep_name = best_name
+    else:
+        dep_name = max(fitted, key=lambda n: float(
+            table.loc[table.experiment == n, "test_acc"].iloc[0]))
     dep_kind, dep_model = fitted[dep_name]
     if dep_kind == "softmax":
         np.savez(os.path.join(MODELS, "clf_model.npz"),
@@ -538,9 +550,13 @@ def run():
     }
     with open(os.path.join(TAB, "experiment_summary.json"), "w") as f:
         json.dump(summary, f, indent=2)
+    # l2 must describe the DEPLOYED model, not the logistic-regression tuning
+    # result: the deployed forecaster is the small MLP (l2=1e-4), whereas
+    # best_l2 (1e-3) is the tuned logistic-regression setting, kept separately.
     meta = {"task": "classification", "target": "next_day_aqi_category",
             "labels": LABELS, "feature_cols": feat_cols, "model": model_type,
-            "deployed_model": dep_name, "l2": best_l2, "source": source,
+            "deployed_model": dep_name, "l2": float(dep_model.l2),
+            "logreg_best_l2": best_l2, "source": source,
             "best_model": best_name,
             "test_accuracy": summary["test_accuracy_best"],
             "test_macroF1": summary["test_macroF1_best"]}

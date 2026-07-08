@@ -1,0 +1,9 @@
+# Canonical author identities (Group 8).
+# Maps the names/emails used in commits to those used in the report and the
+# contribution tracker, so `git shortlog -sne` and `git log` attribute every
+# commit to the right member. In particular, Serein's commits were authored
+# under her GitHub noreply address; this maps them to her ALU email.
+Gaju Keane <g.keane@alustudent.com> <g.keane@alustudent.com>
+Joella Teta <j.teta@alustudent.com> <j.teta@alustudent.com>
+Serein Byiringiro Shima <s.shima@alustudent.com> <180165163+supserrr@users.noreply.github.com>
+Parfait Christian Henry UHIRIWE <p.uhiriwe@alustudent.com> <p.uhiriwe@alustudent.com>

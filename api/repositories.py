@@ -36,8 +36,17 @@ class SQLReadingRepository:
         self.ph = ph                     # '%s' (MySQL) or '?' (SQLite)
 
     # -- helpers ----------------------------------------------------------
+    def _ex(self, sql: str, params: tuple = ()):
+        """Execute via a cursor and return it. Portable across DB-API 2.0
+        drivers: PyMySQL exposes no Connection.execute() (and its
+        Cursor.execute() returns rowcount, not the cursor), so we must open a
+        cursor explicitly rather than rely on the sqlite3 connection shortcut."""
+        cur = self.c.cursor()
+        cur.execute(sql, params)
+        return cur
+
     def _station_id(self, name: str) -> int:
-        cur = self.c.execute(
+        cur = self._ex(
             f"SELECT station_id FROM stations WHERE station_name = {self.ph}",
             (name,))
         row = cur.fetchone()
@@ -52,7 +61,7 @@ class SQLReadingRepository:
 
     def _select(self, sid: int, where: str, params: tuple):
         cols = ", ".join(["ts"] + POLL_FIELDS)
-        return self.c.execute(
+        return self._ex(
             f"SELECT {cols} FROM pollutant_readings "
             f"WHERE station_id = {self.ph} {where}", (sid, *params))
 
@@ -64,7 +73,7 @@ class SQLReadingRepository:
             raise Conflict(f"reading for {station} @ {ts} already exists")
         cols = ", ".join(POLL_FIELDS)
         marks = ", ".join([self.ph] * len(POLL_FIELDS))
-        self.c.execute(
+        self._ex(
             f"INSERT INTO pollutant_readings (station_id, ts, {cols}) "
             f"VALUES ({self.ph}, {self.ph}, {marks})",
             (sid, ts, *[values.get(f) for f in POLL_FIELDS]))
@@ -105,7 +114,7 @@ class SQLReadingRepository:
         if not fields:
             return self.get(station, ts)
         sets = ", ".join(f"{k} = {self.ph}" for k in fields)
-        cur = self.c.execute(
+        cur = self._ex(
             f"UPDATE pollutant_readings SET {sets} "
             f"WHERE station_id = {self.ph} AND ts = {self.ph}",
             (*fields.values(), sid, ts))
@@ -117,7 +126,7 @@ class SQLReadingRepository:
     # -- DELETE -----------------------------------------------------------
     def delete(self, station: str, ts: str) -> dict:
         sid = self._station_id(station)
-        cur = self.c.execute(
+        cur = self._ex(
             f"DELETE FROM pollutant_readings "
             f"WHERE station_id = {self.ph} AND ts = {self.ph}", (sid, ts))
         self.c.commit()
@@ -178,9 +187,19 @@ class MongoReadingRepository:
         return [self._clean(d) for d in cur]
 
     # -- UPDATE -----------------------------------------------------------
+    # Only the measurement sub-documents are mutable; identity/structural fields
+    # (station, timestamp, station_type, location, _id) and any unknown top-level
+    # key are rejected, mirroring the SQL side's field whitelist so a client
+    # cannot re-key or corrupt a document via $set.
+    _MUTABLE = ("pollutants", "weather")
+
     def update(self, station: str, ts, values: dict) -> dict:
+        fields = {k: v for k, v in values.items()
+                  if k.split(".", 1)[0] in self._MUTABLE}
+        if not fields:
+            return self.get(station, ts)
         res = self.col.update_one(
-            {"station": station, "timestamp": self._ts(ts)}, {"$set": values})
+            {"station": station, "timestamp": self._ts(ts)}, {"$set": fields})
         if res.matched_count == 0:
             raise NotFound(f"no document for {station} @ {ts}")
         return self.get(station, ts)
